@@ -1,10 +1,23 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 
 const MealItem = ({ meal, onPress }) => {
+  const [imageError, setImageError] = useState(false);
+
   return (
     <TouchableOpacity style={styles.mealContainer} onPress={onPress}>
-      <Image source={{ uri: meal.imageUrl }} style={styles.image} />
+      {imageError ? (
+        <View style={[styles.image, styles.fallbackImage]}>
+          <Text style={styles.fallbackText}>🍽️</Text>
+          <Text style={styles.fallbackLabel}>No Image</Text>
+        </View>
+      ) : (
+        <Image 
+          source={{ uri: meal.imageUrl }} 
+          style={styles.image}
+          onError={() => setImageError(true)}
+        />
+      )}
       <View style={styles.contentContainer}>
         <Text style={styles.title}>{meal.title}</Text>
         
@@ -50,6 +63,20 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: 200,
+  },
+  fallbackImage: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+  },
+  fallbackText: {
+    fontSize: 48,
+    marginBottom: 8,
+  },
+  fallbackLabel: {
+    fontSize: 14,
+    color: '#999',
+    fontWeight: '600',
   },
   contentContainer: {
     padding: 16,
