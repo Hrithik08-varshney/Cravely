@@ -1,11 +1,12 @@
 import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { MEALS } from '../data/dummy-data'
+import { FavoritesContext } from '../context/FavoritesContext'
 
 const MealsDetailScreen = ({ route, navigation }) => {
   const { mealId } = route.params;
   const [imageError, setImageError] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { isFavorite, toggleFavorite } = useContext(FavoritesContext);
   
   const meal = MEALS.find(m => m.id === mealId);
 
@@ -13,14 +14,14 @@ const MealsDetailScreen = ({ route, navigation }) => {
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity 
-          onPress={() => setIsFavorite(!isFavorite)}
+          onPress={() => toggleFavorite(mealId)}
           style={{ marginRight: 16 }}
         >
-          <Text style={{ fontSize: 24 }}>{isFavorite ? '❤️' : '🤍'}</Text>
+          <Text style={{ fontSize: 24 }}>{isFavorite(mealId) ? '❤️' : '🤍'}</Text>
         </TouchableOpacity>
       ),
     });
-  }, [navigation, isFavorite]);
+  }, [navigation, mealId, isFavorite]);
 
   if (!meal) {
     return (
